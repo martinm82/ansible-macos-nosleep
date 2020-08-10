@@ -1,34 +1,29 @@
 ---
-name: CI
+name: Molecule Test
 
-on:
-  - push
+on: push
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          path: "${{ github.repository }}"
-      - name: molecule
-        uses: robertdebock/molecule-action@2.6.1
-        with:
-          command: lint
-  test:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-18.04, macos-10.15]
-    needs:
-      - lint
+        python-version: [3.6, 3.7, 3.8]
+      max-parallel: 4
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           path: "${{ github.repository }}"
-      - name: molecule
-        uses: actions/hello-world-javascript-action@main
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
         with:
-          who-to-greet: "Mona the Octocat"
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install molecule
+      - name: Test with molecule
+        run: |
+          molecule test
