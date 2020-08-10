@@ -1,0 +1,4 @@
+---
+# tasks file for macos-nosleep
+- name: include assert.yml
+  include_tasks: assert.yml

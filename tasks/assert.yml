@@ -1,0 +1,12 @@
+---
+- name: test if macos-nosleep_X is set correctly
+  assert:
+    that:
+      - macos-nosleep_X is defined
+      - macos-nosleep_X | length > 0
+      - macos-nosleep_X is iterable
+      - macos-nosleep_X | int
+      - macos-nosleep_X | int >= 0
+      - macos-nosleep_X | type_debug == "bool"
+      - macos-nosleep_X in ["a", "b"]
+    quiet: yes
